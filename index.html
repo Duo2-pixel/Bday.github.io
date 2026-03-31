@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aadii's Birthday Protocol</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #050505;
+      --accent-neon: #00ffcc;
+      --accent-pink: #ff007f;
+      --panel-bg: #111;
+      --text-main: #fff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: 'Space Grotesk', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      transition: background 1s ease;
+    }
+
+    /* --- DASHBOARD UI --- */
+    #dashboard {
+      background: var(--panel-bg);
+      border: 2px solid #333;
+      border-radius: 20px;
+      padding: 40px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.8);
+      position: relative;
+      z-index: 10;
+      transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    }
+
+    .header-text {
+      font-family: 'Share Tech Mono', monospace;
+      color: var(--accent-neon);
+      font-size: 1.2rem;
+      text-transform: uppercase;
+      margin-bottom: 30px;
+      text-align: center;
+      letter-spacing: 2px;
+    }
+
+    .task {
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px dashed #333;
+    }
+    
+    .task h3 {
+      font-size: 1rem;
+      margin-bottom: 15px;
+      color: #aaa;
+    }
+
+    /* Toggle Switch */
+    .switch-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #333;
+      transition: .4s;
+      border-radius: 34px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px; width: 26px;
+      left: 4px; bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider { background-color: var(--accent-neon); box-shadow: 0 0 15px var(--accent-neon); }
+    input:checked + .slider:before { transform: translateX(26px); }
+
+    /* Range Slider */
+    .range-container {
+      width: 100%;
+    }
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      background: transparent;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 24px; width: 24px;
+      border-radius: 50%;
+      background: var(--accent-pink);
+      cursor: pointer;
+      margin-top: -8px;
+      box-shadow: 0 0 10px var(--accent-pink);
+    }
+    input[type=range]::-webkit-slider-runnable-track {
+      width: 100%; height: 8px;
+      cursor: pointer;
+      background: #333;
+      border-radius: 4px;
+    }
+    #range-value {
+      display: block;
+      text-align: right;
+      font-family: 'Share Tech Mono', monospace;
+      color: var(--accent-pink);
+      margin-top: 10px;
+      font-size: 1.2rem;
+    }
+
+    /* Big Red Button */
+    .launch-btn-container {
+      text-align: center;
+      margin-top: 40px;
+    }
+    .launch-btn {
+      background: #444;
+      color: #888;
+      border: none;
+      padding: 20px 40px;
+      font-size: 1.5rem;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      border-radius: 12px;
+      box-shadow: 0 10px 0 #222;
+      transition: all 0.2s ease;
+      pointer-events: none; /* Disabled initially */
+    }
+    .launch-btn.unlocked {
+      background: #ff2a2a;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 10px 0 #900000, 0 0 20px rgba(255, 42, 42, 0.5);
+      pointer-events: auto;
+    }
+    .launch-btn.unlocked:active {
+      transform: translateY(10px);
+      box-shadow: 0 0 0 #900000;
+    }
+
+    /* --- FINALE SCREEN --- */
+    #finale {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 50;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .glitch-title {
+      font-size: 5rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, var(--accent-neon), var(--accent-pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 20px;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .typewriter {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 1.5rem;
+      color: #fff;
+      max-width: 600px;
+      line-height: 1.5;
+      min-height: 100px;
+    }
+
+    /* Confetti Canvas */
+    canvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 40;
+    }
+
+    /* Screen Shake Animation */
+    @keyframes shake {
+      0% { transform: translate(1px, 1px) rotate(0deg); }
+      10% { transform: translate(-1px, -2px) rotate(-1deg); }
+      20% { transform: translate(-3px, 0px) rotate(1deg); }
+      30% { transform: translate(3px, 2px) rotate(0deg); }
+      40% { transform: translate(1px, -1px) rotate(1deg); }
+      50% { transform: translate(-1px, 2px) rotate(-1deg); }
+      60% { transform: translate(-3px, 1px) rotate(0deg); }
+      70% { transform: translate(3px, 1px) rotate(-1deg); }
+      80% { transform: translate(-1px, -1px) rotate(1deg); }
+      90% { transform: translate(1px, 2px) rotate(0deg); }
+      100% { transform: translate(1px, -2px) rotate(-1deg); }
+    }
+    .shake-active {
+      animation: shake 0.5s;
+      animation-iteration-count: infinite;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div id="dashboard">
+    <div class="header-text" id="status-text">> SYSTEM LOCKED: AADII_BDAY_PROTOCOL</div>
+
+    <div class="task">
+      <h3>1. INITIALIZE VIBES</h3>
+      <div class="switch-container">
+        <span style="font-family: 'Share Tech Mono';">POWER</span>
+        <label class="switch">
+          <input type="checkbox" id="power-switch">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="task">
+      <h3>2. MAXIMIZE AWESOMENESS</h3>
+      <div class="range-container">
+        <input type="range" id="awesomeness-slider" min="0" max="100" value="0">
+        <span id="range-value">0%</span>
+      </div>
+    </div>
+
+    <div class="launch-btn-container">
+      <button class="launch-btn" id="launch-btn">LAUNCH CELEBRATION</button>
+    </div>
+  </div>
+
+  <div id="finale">
+    <canvas id="confetti"></canvas>
+    <div class="glitch-title" id="final-title">LEVEL UP AADII!</div>
+    <div class="typewriter" id="typewriter-text"></div>
+  </div>
+
+  <script>
+    const powerSwitch = document.getElementById('power-switch');
+    const slider = document.getElementById('awesomeness-slider');
+    const rangeValue = document.getElementById('range-value');
+    const launchBtn = document.getElementById('launch-btn');
+    const dashboard = document.getElementById('dashboard');
+    const finale = document.getElementById('finale');
+    const finalTitle = document.getElementById('final-title');
+    const body = document.body;
+    
+    let isPowerOn = false;
+    let isMaxAwesome = false;
+
+    // Task 1: Switch
+    powerSwitch.addEventListener('change', (e) => {
+      isPowerOn = e.target.checked;
+      if(isPowerOn) {
+        body.style.boxShadow = "inset 0 0 150px rgba(0, 255, 204, 0.1)";
+        document.getElementById('status-text').innerText = "> VIBES ONLINE. WAITING ON AWESOMENESS...";
+      } else {
+        body.style.boxShadow = "none";
+        document.getElementById('status-text').innerText = "> SYSTEM LOCKED: AADII_BDAY_PROTOCOL";
+      }
+      checkUnlock();
+    });
+
+    // Task 2: Slider
+    slider.addEventListener('input', (e) => {
+      const val = e.target.value;
+      rangeValue.innerText = val + '%';
+      
+      if(val == 100) {
+        isMaxAwesome = true;
+        rangeValue.style.color = "#fff";
+        rangeValue.style.textShadow = "0 0 10px var(--accent-pink)";
+      } else {
+        isMaxAwesome = false;
+        rangeValue.style.color = "var(--accent-pink)";
+        rangeValue.style.textShadow = "none";
+      }
+      checkUnlock();
+    });
+
+    // Check if ready to launch
+    function checkUnlock() {
+      if(isPowerOn && isMaxAwesome) {
+        launchBtn.classList.add('unlocked');
+        launchBtn.innerText = "💥 LAUNCH CELEBRATION 💥";
+        document.getElementById('status-text').innerText = "> ALL SYSTEMS GO. PRESS BUTTON.";
+      } else {
+        launchBtn.classList.remove('unlocked');
+        launchBtn.innerText = "LAUNCH CELEBRATION";
+      }
+    }
+
+    // Launch Sequence
+    launchBtn.addEventListener('click', () => {
+      // 1. Shake the screen
+      body.classList.add('shake-active');
+      launchBtn.innerText = "LAUNCHING...";
+      
+      // 2. Explode the dashboard away
+      setTimeout(() => {
+        dashboard.style.transform = "scale(0) rotate(180deg)";
+        dashboard.style.opacity = "0";
+      }, 500);
+
+      // 3. Reveal Finale
+      setTimeout(() => {
+        body.classList.remove('shake-active');
+        dashboard.style.display = "none";
+        finale.style.display = "flex";
+        
+        // Background changes to a dark party vibe
+        body.style.background = "radial-gradient(circle, #2a0845 0%, #050505 100%)";
+        
+        // Pop the title
+        setTimeout(() => {
+          finalTitle.style.opacity = "1";
+          finalTitle.style.transform = "scale(1)";
+          triggerConfetti();
+          typeWriterEffect();
+        }, 300);
+
+      }, 1000);
+    });
+
+    // Typewriter Effect for the short, punchy wish
+    const wishText = "No boring paragraphs. No long essays. \nJust pure good vibes. \n\nHappy Birthday Aadii! \nKeep upgrading, keep winning, and make this year your absolute best one yet. 👑🚀";
+    let i = 0;
+    function typeWriterEffect() {
+      if (i < wishText.length) {
+        if(wishText.charAt(i) === '\n') {
+          document.getElementById("typewriter-text").innerHTML += "<br>";
+        } else {
+          document.getElementById("typewriter-text").innerHTML += wishText.charAt(i);
+        }
+        i++;
+        setTimeout(typeWriterEffect, 50); // Speed of typing
+      }
+    }
+
+    // --- AGGRESSIVE CONFETTI ENGINE ---
+    const canvas = document.getElementById('confetti');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Particle {
+      constructor() {
+        this.x = canvas.width / 2;
+        this.y = canvas.height; // Start from bottom
+        this.r = Math.random() * 8 + 4;
+        this.dx = Math.random() * 20 - 10; // Wide spread
+        this.dy = Math.random() * -25 - 15; // Shoot up high
+        this.colors = ['#00ffcc', '#ff007f', '#ffffff', '#ffea00'];
+        this.color = this.colors[Math.floor(Math.random() * this.colors.length)];
+        this.tilt = Math.floor(Math.random() * 10) - 10;
+        this.tiltAngleInc = (Math.random() * 0.07) + 0.05;
+        this.tiltAngle = 0;
+      }
+      update() {
+        this.dy += 0.5; // Heavy gravity so it falls fast
+        this.x += this.dx;
+        this.y += this.dy;
+        this.tiltAngle += this.tiltAngleInc;
+        this.tilt = Math.sin(this.tiltAngle) * 15;
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.lineWidth = this.r;
+        ctx.strokeStyle = this.color;
+        ctx.moveTo(this.x + this.tilt + this.r, this.y);
+        ctx.lineTo(this.x + this.tilt, this.y + this.tilt + this.r);
+        ctx.stroke();
+      }
+    }
+
+    function triggerConfetti() {
+      // Shoot 200 pieces of confetti
+      for (let i = 0; i < 200; i++) {
+        particles.push(new Particle());
+      }
+      
+      // Add a continuous slow drip of confetti after the main explosion
+      setInterval(() => {
+        let p = new Particle();
+        p.y = -10; // Start at top
+        p.dy = Math.random() * 5 + 2; // Fall down
+        p.dx = Math.random() * 4 - 2;
+        particles.push(p);
+      }, 100);
+    }
+
+    function animateConfetti() {
+      requestAnimationFrame(animateConfetti);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach((p, index) => {
+        p.update();
+        p.draw();
+        // Remove if it falls way off screen
+        if (p.y > canvas.height + 50) particles.splice(index, 1);
+      });
+    }
+    animateConfetti();
+  </script>
+</body>
+</html>
