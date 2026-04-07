@@ -507,31 +507,31 @@
           }, 1500);
 
           // Audio and Music Button Logic
-          musicBtn.style.display = 'block';
-          customAudio.play().then(() => {
-              musicBtn.textContent = '⏸ Pause Track';
-              musicBtn.style.boxShadow = '0 0 30px var(--cyan)';
-          }).catch(() => {
+        //  musicBtn.style.display = 'block';
+         // customAudio.play().then(() => {
+        //      musicBtn.textContent = '⏸ Pause Track';
+            //  musicBtn.style.boxShadow = '0 0 30px var(--cyan)';
+        //  }).catch(() => {
               // Autoplay might be blocked by the browser, requiring user interaction
-              musicBtn.textContent = '🔊 Play Track';
-          });
+           //   musicBtn.textContent = '🔊 Play Track';
+        //  });
 
-        }, 400);
-      }, 700);
-    });
+  //      }, 400);
+//      }, 700);
+//    });
 
     // Custom Audio Play/Pause Toggle
-    musicBtn.addEventListener('click', () => {
-      if (customAudio.paused) {
-        customAudio.play();
-        musicBtn.textContent = '⏸ Pause Track';
-        musicBtn.style.boxShadow = '0 0 30px var(--cyan)';
-      } else {
-        customAudio.pause();
-        musicBtn.textContent = '🔊 Play Track';
-        musicBtn.style.boxShadow = '0 0 20px var(--pink)';
-      }
-    });
+//    musicBtn.addEventListener('click', () => {
+  //    if (customAudio.paused) {
+      //  customAudio.play();
+      //  musicBtn.textContent = '⏸ Pause Track';
+//        musicBtn.style.boxShadow = '0 0 30px var(--cyan)';
+  //    } else {
+       // customAudio.pause();
+  //      musicBtn.textContent = '🔊 Play Track';
+   //     musicBtn.style.boxShadow = '0 0 20px var(--pink)';
+ //     }
+//    });
 
     // --- Typewriter Effect ---
     let typeIdx = 0;
