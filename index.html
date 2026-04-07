@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aadii's Birthday Special</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg1: #0a001a;
+      --bg2: #1a0033;
+      --panel: rgba(20, 10, 40, 0.75);
+      --line: rgba(255,255,255,0.15);
+      --text: #ffffff;
+      --muted: rgba(255,255,255,0.8);
+      --gold: #ffdd00;
+      --pink: #ff007f;
+      --cyan: #00ffff;
+      --purple: #aa00ff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Grotesk', sans-serif;
+      color: var(--text);
+      overflow: hidden;
+      background: linear-gradient(45deg, var(--bg1), var(--bg2), #001133, #33001a);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Vibrant Multi-colored Sparkles */
+    .sparkle-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(4px);
+      animation: floatOrb 8s infinite alternate ease-in-out;
+    }
+
+    @keyframes floatOrb {
+      0% { transform: translateY(0) scale(1); opacity: 0.4; }
+      100% { transform: translateY(-50px) scale(1.5); opacity: 0.8; }
+    }
+
+    #dashboard {
+      width: min(92vw, 560px);
+      padding: 34px;
+      border-radius: 28px;
+      background: var(--panel);
+      border: 2px solid rgba(255, 0, 127, 0.3);
+      box-shadow: 0 0 40px rgba(170, 0, 255, 0.4), inset 0 0 20px rgba(0, 255, 255, 0.2);
+      backdrop-filter: blur(20px);
+      position: relative;
+      z-index: 10;
+      transition: transform .7s cubic-bezier(.2,.8,.2,1), opacity .7s ease;
+    }
+
+    .title {
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, var(--cyan), var(--pink), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+      text-shadow: 0 0 20px rgba(255, 0, 127, 0.5);
+    }
+
+    .subtitle {
+      text-align: center;
+      color: var(--muted);
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .card-row { display: grid; gap: 18px; }
+
+    .task {
+      padding: 18px;
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      border-radius: 20px;
+      background: rgba(255,255,255,0.05);
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    .task h3 {
+      font-size: 0.95rem;
+      margin-bottom: 14px;
+      color: var(--cyan);
+      text-shadow: 0 0 8px var(--cyan);
+    }
+
+    .switch-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      font-weight: bold;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 62px;
+      height: 36px;
+      flex-shrink: 0;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background: rgba(255,255,255,0.1);
+      border: 2px solid rgba(255,255,255,0.2);
+      transition: .35s;
+      border-radius: 999px;
+    }
+    .slider:before {
+      content: "";
+      position: absolute;
+      height: 28px; width: 28px;
+      left: 2px; top: 2px;
+      background: white;
+      border-radius: 50%;
+      transition: .35s;
+      box-shadow: 0 0 10px white;
+    }
+    input:checked + .slider {
+      background: rgba(255, 0, 127, 0.4);
+      border-color: var(--pink);
+      box-shadow: 0 0 20px var(--pink);
+    }
+    input:checked + .slider:before { 
+      transform: translateX(26px); 
+      background: var(--gold);
+      box-shadow: 0 0 15px var(--gold);
+    }
+
+    .range-container { width: 100%; }
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      background: transparent;
+      margin-top: 6px;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 26px; width: 26px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      cursor: pointer;
+      margin-top: -9px;
+      box-shadow: 0 0 20px var(--cyan), 0 0 10px white inset;
+    }
+    input[type=range]::-webkit-slider-runnable-track {
+      width: 100%; height: 8px;
+      cursor: pointer;
+      background: rgba(255,255,255,0.15);
+      border-radius: 999px;
+    }
+    #range-value {
+      display: block;
+      text-align: right;
+      margin-top: 10px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--cyan);
+      text-shadow: 0 0 10px var(--cyan);
+    }
+
+    .launch-btn-container { text-align: center; margin-top: 22px; }
+    .launch-btn {
+      border: none;
+      padding: 18px 36px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border-radius: 999px;
+      color: rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.05);
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,0.1);
+      pointer-events: none;
+      transition: all .4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .launch-btn.unlocked {
+      cursor: pointer;
+      pointer-events: auto;
+      color: #000;
+      background: linear-gradient(90deg, var(--cyan), var(--pink), var(--gold));
+      background-size: 200% auto;
+      animation: shine 3s linear infinite;
+      box-shadow: 0 0 30px var(--pink), 0 0 60px var(--cyan), inset 0 0 10px white;
+      transform: scale(1.05);
+    }
+    @keyframes shine {
+      to { background-position: 200% center; }
+    }
+    .launch-btn.unlocked:active { transform: translateY(4px) scale(0.98); }
+
+    #finale {
+      position: fixed;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      z-index: 50;
+      padding: 24px;
+    }
+
+    .final-card {
+      position: relative;
+      width: min(94vw, 800px);
+      max-height: 95vh;
+      overflow-y: auto;
+      padding: 40px 22px;
+      border-radius: 32px;
+      background: rgba(5, 0, 20, 0.6);
+      border: 2px solid rgba(0, 255, 255, 0.3);
+      backdrop-filter: blur(15px);
+      box-shadow: 0 0 80px rgba(170, 0, 255, 0.6), inset 0 0 30px rgba(255, 0, 127, 0.2);
+    }
+    /* Hide scrollbar for final card */
+    .final-card::-webkit-scrollbar { display: none; }
+    .final-card { -ms-overflow-style: none; scrollbar-width: none; }
+
+    .final-title {
+      font-size: clamp(2.5rem, 7vw, 4.8rem);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+      opacity: 0;
+      transform: translateY(30px) scale(0.8);
+      transition: all 1.2s cubic-bezier(.2, .8, .2, 1);
+      background: linear-gradient(to right, #ff00cc, #3333ff, #00ffff, #ffcc00);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: textGradient 5s ease infinite;
+      text-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+    }
+
+    @keyframes textGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .tree-wrap {
+      width: 100%;
+      height: 380px;
+      position: relative;
+      margin: 15px 0;
+    }
+
+    #treeCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .wish {
+      margin-top: 10px;
+      font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+      line-height: 1.8;
+      color: #fff;
+      font-weight: bold;
+      text-shadow: 0 0 10px rgba(0, 255, 255, 0.8), 0 0 20px rgba(255, 0, 127, 0.6);
+      min-height: 90px;
+    }
+
+    /* --- GLOWING NEON CAKE CSS --- */
+    .cake-container {
+      position: relative;
+      width: 120px;
+      height: 110px;
+      margin: 20px auto 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      opacity: 0;
+      transform: translateY(20px) scale(0.8);
+      transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .cake-container.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    .candle {
+      width: 12px;
+      height: 35px;
+      background: repeating-linear-gradient(45deg, white, white 4px, var(--cyan) 4px, var(--cyan) 8px);
+      position: relative;
+      border-radius: 3px;
+      z-index: 10;
+      box-shadow: 0 0 10px var(--cyan);
+    }
+    .flame {
+      position: absolute;
+      top: -24px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 16px;
+      height: 24px;
+      background: var(--gold);
+      border-radius: 50% 50% 20% 20%;
+      box-shadow: 0 0 15px var(--gold), 0 0 30px var(--pink), 0 0 50px white;
+      animation: flicker 0.1s infinite alternate;
+    }
+    @keyframes flicker {
+      0% { transform: translateX(-50%) scale(1); opacity: 0.9; }
+      100% { transform: translateX(-50%) scale(1.1); opacity: 1; box-shadow: 0 0 25px var(--gold), 0 0 45px var(--pink), 0 0 60px white; }
+    }
+    .cake-tier-top, .cake-tier-bottom {
+      background: rgba(20, 10, 40, 0.9);
+      border: 3px solid var(--pink);
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(255, 0, 127, 0.6), inset 0 0 15px rgba(255, 0, 127, 0.4);
+      position: relative;
+    }
+    .cake-tier-top { width: 70px; height: 30px; z-index: 2; margin-bottom: -3px; border-bottom: none; border-color: var(--cyan); box-shadow: 0 0 20px rgba(0, 255, 255, 0.6), inset 0 0 15px rgba(0, 255, 255, 0.4); }
+    .cake-tier-bottom { width: 110px; height: 40px; z-index: 1; }
+    .icing {
+       position: absolute;
+       top: -3px;
+       left: -3px;
+       right: -3px;
+       height: 12px;
+       background: var(--text);
+       border-radius: 12px 12px 0 0;
+       box-shadow: 0 0 15px white;
+    }
+    /* Drip effect */
+    .icing::after {
+      content: '';
+      position: absolute;
+      top: 10px;
+      left: 10%;
+      width: 8px;
+      height: 15px;
+      background: var(--text);
+      border-radius: 10px;
+      box-shadow: 30px 5px 0 var(--text), 60px 2px 0 var(--text), 0 0 10px white, 30px 5px 10px white, 60px 2px 10px white;
+    }
+
+    .music-btn {
+      position: fixed;
+      right: 25px;
+      bottom: 25px;
+      z-index: 100;
+      display: none;
+      background: linear-gradient(45deg, var(--purple), var(--pink));
+      border: 2px solid white;
+      color: white;
+      font-weight: bold;
+      padding: 12px 24px;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 0 20px var(--pink);
+      transition: all 0.3s;
+    }
+    .music-btn:hover {
+      transform: scale(1.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="sparkle-layer" id="bg-sparkles"></div>  
+  
+  <div id="dashboard">
+    <div class="title">Aadii Birthday Engine</div>
+    <div class="subtitle">Initialize the atmosphere and push the graphics to maximum overload.</div>
+    <div class="card-row">
+      <div class="task">
+        <h3>1. ACTIVATE NEON VIBES</h3>
+        <div class="switch-container">
+          <span>ATMOSPHERE</span>
+          <label class="switch">
+            <input type="checkbox" id="power-switch">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+      <div class="task">
+        <h3>2. MAXIMIZE GRAPHICS</h3>
+        <div class="range-container">
+          <input type="range" id="awesomeness-slider" min="0" max="100" value="0">
+          <span id="range-value">0%</span>
+        </div>
+      </div>
+    </div>
+    <div class="launch-btn-container">
+      <button class="launch-btn" id="launch-btn">IGNITE SURPRISE</button>
+    </div>
+  </div>  
+
+  <div id="finale">
+    <div class="final-card">
+      <div class="final-title" id="final-title">Happy Birthday Aadii!</div>
+      <div class="tree-wrap">
+        <canvas id="treeCanvas"></canvas>
+      </div>
+      <div class="wish" id="typewriter-text"></div>
+      
+      <div class="cake-container" id="birthday-cake">
+         <div class="candle">
+           <div class="flame"></div>
+         </div>
+         <div class="cake-tier-top"><div class="icing"></div></div>
+         <div class="cake-tier-bottom"><div class="icing"></div></div>
+      </div>
+    </div>
+  </div>
+  
+  <audio id="custom-audio" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" loop preload="auto"></audio>
+  
+  <button class="music-btn" id="music-btn">🔊 Play Track</button>
+
+  <script>
+    // --- Colorful Background Orbs ---
+    const sparkleLayer = document.getElementById('bg-sparkles');
+    const colors = ['#00ffff', '#ff007f', '#aa00ff', '#ffdd00', '#00ff66'];
+    for(let i=0; i<30; i++) {
+      const orb = document.createElement('div');
+      orb.className = 'orb';
+      const size = Math.random() * 8 + 4;
+      orb.style.width = size + 'px';
+      orb.style.height = size + 'px';
+      orb.style.left = Math.random() * 100 + 'vw';
+      orb.style.top = Math.random() * 100 + 'vh';
+      orb.style.background = colors[Math.floor(Math.random() * colors.length)];
+      orb.style.boxShadow = `0 0 ${size*2}px ${orb.style.background}`;
+      orb.style.animationDuration = (Math.random() * 5 + 5) + 's';
+      orb.style.animationDelay = (Math.random() * -5) + 's';
+      sparkleLayer.appendChild(orb);
+    }
+
+    // --- Controls Logic ---
+    const powerSwitch = document.getElementById('power-switch');
+    const slider = document.getElementById('awesomeness-slider');
+    const rangeValue = document.getElementById('range-value');
+    const launchBtn = document.getElementById('launch-btn');
+    const dashboard = document.getElementById('dashboard');
+    const finale = document.getElementById('finale');
+    const finalTitle = document.getElementById('final-title');
+    const wishBox = document.getElementById('typewriter-text');
+    const musicBtn = document.getElementById('music-btn');
+    const customAudio = document.getElementById('custom-audio');
+    const cake = document.getElementById('birthday-cake');
+
+    let isPowerOn = false;
+    let isMaxAwesome = false;
+    const wishText = `May your year explode with as much color as this tree! \nStay legendary, stay vibrant, and keep leveling up. \nHappy Birthday, Best Bro!`;
+
+    const updateUnlock = () => {
+      isPowerOn = powerSwitch.checked;
+      isMaxAwesome = parseInt(slider.value) === 100;
+      rangeValue.textContent = slider.value + '%';
+      rangeValue.style.color = isMaxAwesome ? 'var(--gold)' : 'var(--cyan)';
+      rangeValue.style.textShadow = isMaxAwesome ? '0 0 15px var(--gold)' : '0 0 10px var(--cyan)';
+      launchBtn.classList.toggle('unlocked', isPowerOn && isMaxAwesome);
+    };
+
+    powerSwitch.addEventListener('change', updateUnlock);
+    slider.addEventListener('input', updateUnlock);
+
+    launchBtn.addEventListener('click', () => {
+      if (!isPowerOn || !isMaxAwesome) return;
+      
+      dashboard.style.opacity = '0';
+      dashboard.style.transform = 'scale(1.2) translateY(-20px)'; // Dramatic exit
+      
+      setTimeout(() => {
+        dashboard.style.display = 'none';
+        finale.style.display = 'flex';
+        resizeCanvas();
+        
+        setTimeout(() => {
+          finalTitle.style.opacity = '1';
+          finalTitle.style.transform = 'translateY(0) scale(1)';
+          startTreeAnimation();
+          startTypewriter();
+          
+          // Show Cake after text starts typing
+          setTimeout(() => {
+              cake.classList.add('show');
+          }, 1500);
+
+          // Audio and Music Button Logic
+          musicBtn.style.display = 'block';
+          customAudio.play().then(() => {
+              musicBtn.textContent = '⏸ Pause Track';
+              musicBtn.style.boxShadow = '0 0 30px var(--cyan)';
+          }).catch(() => {
+              // Autoplay might be blocked by the browser, requiring user interaction
+              musicBtn.textContent = '🔊 Play Track';
+          });
+
+        }, 400);
+      }, 700);
+    });
+
+    // Custom Audio Play/Pause Toggle
+    musicBtn.addEventListener('click', () => {
+      if (customAudio.paused) {
+        customAudio.play();
+        musicBtn.textContent = '⏸ Pause Track';
+        musicBtn.style.boxShadow = '0 0 30px var(--cyan)';
+      } else {
+        customAudio.pause();
+        musicBtn.textContent = '🔊 Play Track';
+        musicBtn.style.boxShadow = '0 0 20px var(--pink)';
+      }
+    });
+
+    // --- Typewriter Effect ---
+    let typeIdx = 0;
+    function startTypewriter() {
+      if (typeIdx < wishText.length) {
+        wishBox.textContent += wishText.charAt(typeIdx);
+        typeIdx++;
+        setTimeout(startTypewriter, 35);
+      }
+    }
+
+    // --- HIGH GRAPHICS Canvas Tree Logic ---
+    const canvas = document.getElementById('treeCanvas');
+    const ctx = canvas.getContext('2d');
+    let branches = [];
+    let timeTick = 0;
+
+    function resizeCanvas() {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width = rect.width * devicePixelRatio;
+      canvas.height = rect.height * devicePixelRatio;
+      ctx.scale(devicePixelRatio, devicePixelRatio);
+    }
+
+    class Branch {
+      constructor(x, y, angle, len, depth, hue) {
+        this.x1 = x;
+        this.y1 = y;
+        this.angle = angle;
+        this.len = len;
+        this.depth = depth;
+        this.hue = hue;
+        this.progress = 0;
+        this.x2 = x + Math.cos(angle) * len;
+        this.y2 = y + Math.sin(angle) * len;
+      }
+      draw() {
+        const cx = this.x1 + (this.x2 - this.x1) * this.progress;
+        const cy = this.y1 + (this.y2 - this.y1) * this.progress;
+        
+        ctx.beginPath();
+        // Dynamic Glowing Neon Colors
+        ctx.strokeStyle = `hsl(${this.hue + timeTick}, 100%, ${50 + this.depth * 3}%)`;
+        ctx.shadowColor = ctx.strokeStyle;
+        ctx.shadowBlur = 15; // Heavy Bloom/Glow
+        ctx.lineWidth = Math.max(1.5, this.depth * 1.2);
+        ctx.lineCap = 'round';
+        
+        ctx.moveTo(this.x1, this.y1);
+        ctx.lineTo(cx, cy);
+        ctx.stroke();
+        
+        // Disable shadow for performance on next draw loops
+        ctx.shadowBlur = 0; 
+
+        if (this.progress < 1) this.progress += 0.025; // Faster growth
+      }
+    }
+
+    function createTree(x, y, angle, len, depth, hue) {
+      if (depth === 0) return;
+      const b = new Branch(x, y, angle, len, depth, hue);
+      branches.push(b);
+      
+      setTimeout(() => {
+        createTree(b.x2, b.y2, angle - 0.45, len * 0.76, depth - 1, hue - 20);
+        createTree(b.x2, b.y2, angle + 0.45, len * 0.76, depth - 1, hue + 20);
+      }, 250); // Faster branching
+    }
+
+    function startTreeAnimation() {
+      const w = canvas.width / devicePixelRatio;
+      const h = canvas.height / devicePixelRatio;
+      // Start hue at 300 (pink/purple)
+      createTree(w / 2, h - 20, -Math.PI / 2, h * 0.22, 10, 300);
+      animate();
+    }
+
+    function animate() {
+      timeTick += 0.5; // Slowly shift the rainbow colors over time
+      const w = canvas.width / devicePixelRatio;
+      const h = canvas.height / devicePixelRatio;
+      ctx.clearRect(0, 0, w, h);
+      
+      branches.forEach(b => b.draw());
+      
+      // Giant Glowing Light Fruits at the ends
+      branches.filter(b => b.progress >= 1 && b.depth < 3).forEach((b, i) => {
+        ctx.beginPath();
+        const leafHue = (b.hue + timeTick * 2) % 360;
+        ctx.fillStyle = `hsl(${leafHue}, 100%, 60%)`;
+        ctx.shadowColor = ctx.fillStyle;
+        ctx.shadowBlur = 20;
+        // Make the fruits pulse in size
+        const radius = 3 + Math.sin(timeTick * 0.1 + i) * 1.5;
+        ctx.arc(b.x2, b.y2, radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      });
+
+      requestAnimationFrame(animate);
+    }
+  </script>
+</body>
+</html>
